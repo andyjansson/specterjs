@@ -23,7 +23,7 @@ namespace SpecterJS.Util
 				if (args.Length == 0)
 					return (target as dynamic)();
 
-                var binder = Binder.Invoke(CSharpBinderFlags.None, null, Enumerable.Repeat(argInfo, args.Length));
+				var binder = Binder.Invoke(CSharpBinderFlags.None, null, Enumerable.Repeat(argInfo, args.Length));
 				if (dynamicObject.TryInvoke((InvokeBinder)binder, args, out result))
 					return result;
 			}

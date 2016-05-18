@@ -45,7 +45,7 @@ namespace SpecterJS.Bindings.Modules.ChildProcess
 
 			onExit exitHandler = delegate (int status)
 			{
-                ObjectHelpers.DynamicInvoke(cb, status, stdout.ToString(), stderr.ToString());
+				ObjectHelpers.DynamicInvoke(cb, status, stdout.ToString(), stderr.ToString());
 			};
 			context.StandardOutput.AddEvent("data", stdoutHandler);
 			context.StandardError.AddEvent("data", stderrHandler);

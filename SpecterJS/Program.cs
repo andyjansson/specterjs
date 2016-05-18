@@ -41,7 +41,7 @@ namespace SpecterJS
 			else
 			{
 				code = ResourceHelpers.ReadResource("repl.js");
-                file = "repl.js";
+				file = "repl.js";
 			}
 
 			try

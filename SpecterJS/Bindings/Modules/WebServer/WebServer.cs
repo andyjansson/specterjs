@@ -52,7 +52,7 @@ namespace SpecterJS.Bindings.Modules.WebServer
 				var builder = new UriBuilder(url);
 				builder.Host = "localhost";
 				url = builder.Uri;
-            }
+			}
 
 			Listener listener;
 
@@ -63,9 +63,9 @@ namespace SpecterJS.Bindings.Modules.WebServer
 			}
 
 			listener = new Listener(url, opts, callback);
-            listeners.Add(url, listener);
+			listeners.Add(url, listener);
 			return listener;
-        }
+		}
 
 		[ScriptMember(Name = "port")]
 		public int Port

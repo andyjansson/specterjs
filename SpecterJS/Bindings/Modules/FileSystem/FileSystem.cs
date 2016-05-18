@@ -92,7 +92,7 @@ namespace SpecterJS.Bindings.Modules.FileSystem
 			var exec = new string[] { ".exe", ".bat", ".com" }; 
 			string ext = Path.GetExtension(path).ToLower();
 			return exec.Contains(ext);
-        }
+		}
 
 		[ScriptMember(Name = "isFile")]
 		public bool IsFile(string path)
@@ -244,7 +244,7 @@ namespace SpecterJS.Bindings.Modules.FileSystem
 		public long GetFileSize(string path)
 		{
 			return File.Exists(path) ? new FileInfo(path).Length : -1;
-        }
+		}
 
 		[ScriptMember(Name = "touch")]
 		public void TouchFile(string path)

@@ -19,7 +19,7 @@ namespace SpecterJS
 			engine = new V8ScriptEngine();
 			engine.AddHostObject("phantom", new Phantom(this));
 			engine.AddHostType("Timer", typeof(Bindings.Timer));
-        }
+		}
 
 		public Options Options { get; private set; }
 

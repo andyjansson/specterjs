@@ -13,7 +13,7 @@ namespace SpecterJS.Bindings.Modules.WebServer
 		private HttpListenerResponse response;
 		private bool headersSent;
 
-        public Response(HttpListenerResponse response)
+		public Response(HttpListenerResponse response)
 		{
 			this.response = response;
 		}

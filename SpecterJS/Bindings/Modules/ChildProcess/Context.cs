@@ -36,23 +36,23 @@ namespace SpecterJS.Bindings.Modules.ChildProcess
 			StandardError = new StreamHandler(() => { process.BeginErrorReadLine(); });
 
 			process.Exited += delegate (object sender, EventArgs e)
-            {
-                status = process.ExitCode;
-                hasExited = true;
+			{
+				status = process.ExitCode;
+				hasExited = true;
 
-                if (OnExit != null)
-                    ObjectHelpers.DynamicInvoke(OnExit, process.ExitCode);
-            };
+				if (OnExit != null)
+					ObjectHelpers.DynamicInvoke(OnExit, process.ExitCode);
+			};
 
-            process.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e)
-            {
-                StandardOutput.Write(e.Data);
-            };
+			process.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e)
+			{
+				StandardOutput.Write(e.Data);
+			};
 
-            process.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e)
-            {
-                StandardError.Write(e.Data);
-            };
+			process.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e)
+			{
+				StandardError.Write(e.Data);
+			};
 
 			process.Start();
 		}

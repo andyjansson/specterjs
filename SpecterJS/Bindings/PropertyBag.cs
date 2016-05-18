@@ -7,44 +7,44 @@ using System.Reflection;
 
 namespace SpecterJS.Bindings
 {
-    public abstract class PropertyBag : DynamicObject
+	public abstract class PropertyBag : DynamicObject
 	{
 		private Dictionary<string, object> _dict;
 
 		public PropertyBag()
-            : base()
-        {
+			: base()
+		{
 			this._dict = new Dictionary<string, object>();
 		}
 
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{
-            var type = this.GetType();
-            var propInfo = type.GetProperties()
-                .Where(p => Attribute.IsDefined(p, typeof(ScriptMemberAttribute)))
-                .Where(p => p.GetCustomAttribute<ScriptMemberAttribute>().Name.Equals(binder.Name))
-                .SingleOrDefault();
+			var type = this.GetType();
+			var propInfo = type.GetProperties()
+				.Where(p => Attribute.IsDefined(p, typeof(ScriptMemberAttribute)))
+				.Where(p => p.GetCustomAttribute<ScriptMemberAttribute>().Name.Equals(binder.Name))
+				.SingleOrDefault();
 
-            if (propInfo != null)
-            {
-                result = propInfo.GetValue(this);
-                return true;
-            }
-            return this._dict.TryGetValue(binder.Name, out result);
+			if (propInfo != null)
+			{
+				result = propInfo.GetValue(this);
+				return true;
+			}
+			return this._dict.TryGetValue(binder.Name, out result);
 		}
 
 		public override bool TrySetMember(SetMemberBinder binder, object value)
 		{
-            var type = this.GetType();
-            var propInfo = type.GetProperties()
-                .Where(p => Attribute.IsDefined(p, typeof(ScriptMemberAttribute)))
-                .Where(p => p.GetCustomAttribute<ScriptMemberAttribute>().Name.Equals(binder.Name))
-                .SingleOrDefault();
+			var type = this.GetType();
+			var propInfo = type.GetProperties()
+				.Where(p => Attribute.IsDefined(p, typeof(ScriptMemberAttribute)))
+				.Where(p => p.GetCustomAttribute<ScriptMemberAttribute>().Name.Equals(binder.Name))
+				.SingleOrDefault();
 
-            if (propInfo != null)
-                propInfo.SetValue(this, value);
+			if (propInfo != null)
+				propInfo.SetValue(this, value);
 			else
-                this._dict[binder.Name] = value;
+				this._dict[binder.Name] = value;
 
 			return true;
 		}

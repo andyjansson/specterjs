@@ -22,18 +22,17 @@ namespace SpecterJS.Bindings.Modules.WebServer
 			Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
 			var acceptConnection = new Action<HttpListenerContext>((HttpListenerContext context) =>
 			{
-                var request = new Request(context.Request);
+				var request = new Request(context.Request);
 				var response = new Response(context.Response);
 
-                if (opts != null)
-                {
-                    var keepAlive = ObjectHelpers.GetProperty(opts, "keepAlive");
-                    if (!(keepAlive is Undefined) && (bool)keepAlive == true)
-                    {
-                        context.Response.KeepAlive = true;
-                    }
-                }
-				Console.WriteLine((callback as dynamic).toString());
+				if (opts != null)
+				{
+					var keepAlive = ObjectHelpers.GetProperty(opts, "keepAlive");
+					if (!(keepAlive is Undefined) && (bool)keepAlive == true)
+					{
+						context.Response.KeepAlive = true;
+					}
+				}
 				ObjectHelpers.DynamicInvoke(callback, request, response);
 			});
 

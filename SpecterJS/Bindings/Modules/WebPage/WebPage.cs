@@ -23,7 +23,7 @@ namespace SpecterJS.Bindings.Modules.WebPage
 		private string navigationType;
 		private ScriptEngine engine;
 
-        public WebPage(string libraryPath, bool ignoreSslErrors, ScriptEngine engine)
+		public WebPage(string libraryPath, bool ignoreSslErrors, ScriptEngine engine)
 		{
 			LibraryPath = libraryPath;
 			this.engine = engine;
@@ -32,16 +32,16 @@ namespace SpecterJS.Bindings.Modules.WebPage
 			browser.Size = new Size(400, 300);
 			browser.ScrollBarsEnabled = false;
 			browser.IgnoreSslErrors = ignoreSslErrors;
-            browser.ObjectForScripting = new Bridge(this);
+			browser.ObjectForScripting = new Bridge(this);
 
-            browser.Navigated += delegate(object sender, WebBrowserNavigatedEventArgs e)
+			browser.Navigated += delegate(object sender, WebBrowserNavigatedEventArgs e)
 			{
 				if (OnUrlChanged != null)
 					ObjectHelpers.DynamicInvoke(OnUrlChanged, e.Url.AbsoluteUri);
 
-                if (OnInitialized != null)
-                    ObjectHelpers.DynamicInvoke(OnInitialized);
-            };
+				if (OnInitialized != null)
+					ObjectHelpers.DynamicInvoke(OnInitialized);
+			};
 			
 			browser.Closing += delegate (object sender, EventArgs e)
 			{
@@ -157,7 +157,7 @@ namespace SpecterJS.Bindings.Modules.WebPage
 		{
 			get
 			{
-                return new Event();
+				return new Event();
 			}
 		}
 
@@ -430,9 +430,9 @@ namespace SpecterJS.Bindings.Modules.WebPage
 		public object Evaluate(dynamic func, params dynamic[] args)
 		{
 			var source = func is string ? func : func.toString();
-            var parameters = new List<string>();
-            foreach (var arg in args)
-            {
+			var parameters = new List<string>();
+			foreach (var arg in args)
+			{
 				if (arg is Undefined)
 					parameters.Add("null");
 				else
@@ -442,30 +442,30 @@ namespace SpecterJS.Bindings.Modules.WebPage
 			var ret = Eval(source);
 			var json = engine.Script.JSON.stringify(ret);
 			var decoded = engine.Script.JSON.parse(json);
-            return decoded;
-        }
+			return decoded;
+		}
 
-        [ScriptMember(Name = "evaluateAsync")]
+		[ScriptMember(Name = "evaluateAsync")]
 		public void EvaluateAsync(dynamic func, params dynamic[] args)
 		{
-            Task.Factory.StartNew(() => Evaluate(func, args));
+			Task.Factory.StartNew(() => Evaluate(func, args));
         }
 
 		[ScriptMember(Name = "evaluateJavascript")]
 		public object EvaluateJavascript(string source)
 		{
-            source = string.Format("({0})();", source);
-            return Eval(source);
+			source = string.Format("({0})();", source);
+			return Eval(source);
 		}
 
-        private object Eval(string source)
-        {
-            var eval = new Func<string, object>((string src) =>
-            {
-                var doc = frame?.Document ?? browser.Document;
-                return doc.InvokeScript("eval", new object[] { src });
-            });
-            return browser.Invoke(eval, source);
+		private object Eval(string source)
+		{
+			var eval = new Func<string, object>((string src) =>
+			{
+				var doc = frame?.Document ?? browser.Document;
+				return doc.InvokeScript("eval", new object[] { src });
+			});
+			return browser.Invoke(eval, source);
 		}
 
 		[ScriptMember(Name = "getPage")]
@@ -516,14 +516,14 @@ namespace SpecterJS.Bindings.Modules.WebPage
 			var eventTarget = (HTMLScriptEvents2_Event)script;
 			HTMLScriptEvents2_onreadystatechangeEventHandler listener = null;
 
-            listener = delegate
+			listener = delegate
 			{
 				if (script.readyState == "complete" || script.readyState == "loaded")
 				{
 					eventTarget.onreadystatechange -= listener;
 					callback();
-                }
-            };
+				}
+			};
 			eventTarget.onreadystatechange += listener;
 		}
 
@@ -533,10 +533,10 @@ namespace SpecterJS.Bindings.Modules.WebPage
 			if (!File.Exists(filename) && !File.Exists(Path.Combine(LibraryPath, filename)))
 				return false;
 
-			if (!File.Exists(filename))	filename = Path.Combine(LibraryPath, filename);
+			if (!File.Exists(filename)) filename = Path.Combine(LibraryPath, filename);
 
 			var element = browser.Document.CreateElement("script");
-            var script = element.DomElement as IHTMLScriptElement;
+			var script = element.DomElement as IHTMLScriptElement;
 			script.text = File.ReadAllText(filename);
 			script.type = "text/javascript";
 			var doc = frame?.Document ?? browser.Document;
@@ -565,8 +565,8 @@ namespace SpecterJS.Bindings.Modules.WebPage
 			WebBrowserNavigatedEventHandler navigated = null;
 
 			navigationType = "Other";
-            var frameCount = 0;
-            var done = false;
+			var frameCount = 0;
+			var done = false;
 
 			navigated = delegate (object sender, WebBrowserNavigatedEventArgs e)
 			{
@@ -605,55 +605,55 @@ namespace SpecterJS.Bindings.Modules.WebPage
 
            
 
-            completed = new WebBrowserDocumentCompletedEventHandler(delegate (object s, WebBrowserDocumentCompletedEventArgs e)
+			completed = new WebBrowserDocumentCompletedEventHandler(delegate (object s, WebBrowserDocumentCompletedEventArgs e)
 			{
-                frameCount++;
+				frameCount++;
 
 				var complete = false;
 
-                if (browser.Document != null)
-                {
-                    HtmlWindow win = browser.Document.Window;
-                    if (!(win.Frames.Count > frameCount && win.Frames.Count > 0))
+				if (browser.Document != null)
+				{
+					HtmlWindow win = browser.Document.Window;
+					if (!(win.Frames.Count > frameCount && win.Frames.Count > 0))
 						complete = true;
-                }
-                else complete = true;
+				}
+				else complete = true;
 
 
-                if (complete)
-                {
-                    EvaluateAsync(ResourceHelpers.ReadResource("browser/bootstrap.js"));
-                    browser.NavigateError -= fail;
-                    browser.DocumentCompleted -= completed;
-                    frame = browser.Document.Window;
-                    browser.Navigated -= navigated;
+				if (complete)
+				{
+					EvaluateAsync(ResourceHelpers.ReadResource("browser/bootstrap.js"));
+					browser.NavigateError -= fail;
+					browser.DocumentCompleted -= completed;
+					frame = browser.Document.Window;
+					browser.Navigated -= navigated;
 
-                    var width = browser.Document.Body.ScrollRectangle.Width;
-                    var height = browser.Document.Body.ScrollRectangle.Height;
-                    browser.Size = new Size(width, height);
+					var width = browser.Document.Body.ScrollRectangle.Width;
+					var height = browser.Document.Body.ScrollRectangle.Height;
+					browser.Size = new Size(width, height);
 
-                    if (callback != null)
-                        ObjectHelpers.DynamicInvoke(callback, "success");
+					if (callback != null)
+						ObjectHelpers.DynamicInvoke(callback, "success");
 
 					done = true;
 
-                    if (OnLoadFinished != null)
-                    {
-                        ObjectHelpers.DynamicInvoke(OnLoadFinished, "success");
-                    }
-                    navigationType = "Unknown";
-                }
+					if (OnLoadFinished != null)
+					{
+						ObjectHelpers.DynamicInvoke(OnLoadFinished, "success");
+					}
+					navigationType = "Unknown";
+				}
 			});
 
 			var headers = string.Empty;
 
-            if (CustomHeaders != null)
-            {
-                foreach (var name in CustomHeaders.GetDynamicMemberNames())
-                {
-                    headers += string.Format("{0}: {1}\r\n", (string)name, CustomHeaders[name]);
-                }
-            }
+			if (CustomHeaders != null)
+			{
+				foreach (var name in CustomHeaders.GetDynamicMemberNames())
+				{
+					headers += string.Format("{0}: {1}\r\n", (string)name, CustomHeaders[name]);
+				}
+			}
 
 			switch (method)
 			{
@@ -676,8 +676,8 @@ namespace SpecterJS.Bindings.Modules.WebPage
 
 			while (callback == null && !done)
 			{
-                Thread.Sleep(10);
-                Application.DoEvents();
+				Thread.Sleep(10);
+				Application.DoEvents();
 			}
 		}
 
@@ -736,7 +736,7 @@ namespace SpecterJS.Bindings.Modules.WebPage
 				var encoder = ImageCodecInfo.GetImageEncoders().Where(x => x.FormatID == imgFormat.Guid).Single();
 				var encoderParams = new EncoderParameters(1);
 				encoderParams.Param[0] = new EncoderParameter(Encoder.Quality, quality);
-                browser.DrawToBitmap(output, rect);
+				browser.DrawToBitmap(output, rect);
 				output.Save(filename, encoder, encoderParams);
 			}
 		}
@@ -765,7 +765,7 @@ namespace SpecterJS.Bindings.Modules.WebPage
 			{
 				var stream = new MemoryStream();
 
-                browser.Invoke(new Action(() => browser.DrawToBitmap(output, rect)));
+				browser.Invoke(new Action(() => browser.DrawToBitmap(output, rect)));
 				output.Save(stream, imgFormat);
 				return Convert.ToBase64String(stream.ToArray());
 			}

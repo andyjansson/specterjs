@@ -35,7 +35,7 @@ namespace SpecterJS.CommandLine
 					.Where(x => x.Name.Replace("-", "").Equals(value, StringComparison.OrdinalIgnoreCase))
 					.Single().GetEncoding();
 
-            return Convert.ChangeType(value, t);
-        }
+			return Convert.ChangeType(value, t);
+		}
 	}
 }

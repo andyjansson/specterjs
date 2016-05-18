@@ -1,6 +1,6 @@
 ﻿namespace SpecterJS.Bindings.Modules.CookieJar
 {
-    // TODO: Implement
+	// TODO: Implement
 	public class CookieJar
 	{
 	}

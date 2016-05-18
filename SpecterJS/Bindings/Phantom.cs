@@ -71,7 +71,7 @@ namespace SpecterJS.Bindings
 			var webPage = new WebPage(LibraryPath, specter.Options.IgnoreSslErrors, engine);
 			webPage.OnError = OnError;
 			return webPage;
-        }
+		}
 
 		[ScriptMember(Name = "createWebServer")]
 		public WebServer CreateWebServer()
@@ -106,7 +106,7 @@ namespace SpecterJS.Bindings
 			else if (File.Exists(Path.Combine(LibraryPath, path)))
 			{
 				path = Path.Combine(LibraryPath, path);
-                script = File.ReadAllText(path);
+				script = File.ReadAllText(path);
 			}
 			else
 				script = ResourceHelpers.ReadResource(path);
@@ -140,6 +140,7 @@ namespace SpecterJS.Bindings
 		[ScriptMember(Name = "onError")]
 		public dynamic OnError { get; set; }
 
+		[NoScriptAccess]
 		public void OnExposedToScriptCode(ScriptEngine engine)
 		{
 			this.engine = engine;

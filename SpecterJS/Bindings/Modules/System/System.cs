@@ -15,7 +15,7 @@ namespace SpecterJS.Bindings.Modules.System
 			Arguments = args;
 			outputEncoding = encoding;
 			OperatingSystem = new OperatingSystem();
-        }
+		}
 
 		[ScriptMember(Name = "args")]
 		public dynamic Arguments { get; set; }

@@ -49,7 +49,7 @@ namespace SpecterJS.Bindings.Modules.System
 					default:
 						return version.Major.ToString() + (version.Minor > 0 ? "." + version.Minor : "");
 				}
-            }
+			}
 		}
 	}
 }
