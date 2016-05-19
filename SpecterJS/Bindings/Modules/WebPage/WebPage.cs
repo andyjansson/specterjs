@@ -438,11 +438,8 @@ namespace SpecterJS.Bindings.Modules.WebPage
 				else
 					parameters.Add(engine.Script.JSON.stringify(arg));
 			}
-			source = string.Format("({0})({1});", source, string.Join(",", parameters));
-			var ret = Eval(source);
-			var json = engine.Script.JSON.stringify(ret);
-			var decoded = engine.Script.JSON.parse(json);
-			return decoded;
+			source = string.Format("JSON.stringify(({0})({1}));", source, string.Join(",", parameters));
+			return engine.Script.JSON.parse(Eval(source));
 		}
 
 		[ScriptMember(Name = "evaluateAsync")]
