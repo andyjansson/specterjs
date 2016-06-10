@@ -1,8 +1,45 @@
 # SpecterJS
 
-## THIS IS A WORK IN PROGRESS
+**THIS IS A WORK IN PROGRESS**
 
 SpecterJS is a scriptable headless browser with Internet Explorer bindings. SpecterJS aims to provide full API compatibility with [PhantomJS](http://phantomjs.org/).
+
+SpecterJS is suitable for:
+
+* Website testing
+* Page automation
+* Screen capture
+* Web scraping
+* Network monitoring
+* etc.
+
+## Usage
+
+**Example:**
+
+```
+> specterjs example.js
+```
+
+```js
+var page = require('webpage').create();
+var url = 'http://www.google.com/';
+
+page.viewportSize = {
+  width: 800,
+  height: 600
+};
+
+console.log("Loading web page: " + url);
+page.open(url, function (status) {
+  console.log("Rendering page to screenshot.png");
+  page.render("screenshot.png");
+  phantom.exit();
+});
+```
+
+For more examples please refer to [phantomjs.org/examples/](http://phantomjs.org/examples/).
+For command-line options refer to the compatibility table below.
 
 # Compatibility
 
@@ -17,7 +54,7 @@ SpecterJS is a scriptable headless browser with Internet Explorer bindings. Spec
 | [`webpage`](docs/compatibility/modules/webpage.md)  | :warning: Partially implemented  |
 | [`webserver`](docs/compatibility/modules/webserver.md) | :white_check_mark: Implemented |
 
-## Command line Interface
+## Command Line Interface
 
 ### Usage
 ```
@@ -75,7 +112,7 @@ SpecterJS is a scriptable headless browser with Internet Explorer bindings. Spec
 
 ## JavaScript globals
 
-| Global | Status | Comment |
+| Global | Status | Notes |
 | ------ | ------ | ------- |
 | `phantom` | :white_check_mark: Implemented | —  |
 | `require()` | :white_check_mark: Implemented | — |
