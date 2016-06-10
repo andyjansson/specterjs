@@ -38,7 +38,7 @@ page.open(url, function (status) {
 });
 ```
 
-For more examples please refer to [phantomjs.org/examples/](http://phantomjs.org/examples/).
+For more examples please visit [phantomjs.org/examples/](http://phantomjs.org/examples/).
 For command-line options refer to the compatibility table below.
 
 # Compatibility
