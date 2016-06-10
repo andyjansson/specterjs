@@ -1,7 +1,7 @@
 # `system` Module
 
-| Property | Returns | Status | Notes |
-| -------- | ------- | ------ | ----- |
+| Property | Type | Status | Notes |
+| -------- | ---- | ------ | ----- |
 | `args` | `string[]` | :white_check_mark: Implemented | The arguments the script was called with |
 | `env` | `object` | :white_check_mark: Implemented | Environment variables |
 | `os` | [Operating system](#operating-system) | :white_check_mark: Implemented | — |
@@ -13,8 +13,8 @@
 
 ## Operating system
 
-| Property | Returns | Status | Notes |
-| -------- | ------- | ------ | ----- |
+| Property | Type | Status | Notes |
+| -------- | ---- | ------ | ----- |
 | `architecture` | `string` | :white_check_mark: Implemented | `32bit` or `64bit` |
 | `windows` | `string` | :white_check_mark: Implemented | Always returns `windows` |
 | `version` | `string` | :white_check_mark: Implemented | — |

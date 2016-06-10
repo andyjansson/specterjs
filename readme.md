@@ -11,7 +11,7 @@ SpecterJS is a scriptable headless browser with Internet Explorer bindings. Spec
 | Module  | Status |
 | -------- | ----- |
 | [`child_process`](docs/compatibility/modules/child_process.md) | :white_check_mark: Implemented  |
-| Cookie Jar | :x: Not Implemented |
+| `cookiejar` | :x: Not Implemented |
 | [`fs`](docs/compatibility/modules/fs.md) | :white_check_mark: Implemented |
 | [`system`](docs/compatibility/modules/system.md) | :white_check_mark: Implemented |
 | [`webpage`](docs/compatibility/modules/webpage.md)  | :warning: Partially implemented  |

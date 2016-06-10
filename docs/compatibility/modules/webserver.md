@@ -1,7 +1,7 @@
 # `webserver` Module
 
-| Method/Property | Returns | Status |
-| --------------- | ------- | ------ |
+| Method/Property | Type | Status |
+| --------------- | ---- | ------ |
 | `listen(port, callback)` | [Listener](#listener) | :white_check_mark: Implemented |
 | `listen(addr, callback)` | [Listener](#listener) | :white_check_mark: Implemented |
 | `listen(port, opts, callback)` | [Listener](#listener) | :white_check_mark: Implemented |
@@ -9,8 +9,8 @@
 
 ## Listener
 
-| Method | Returns | Status |
-| ------ | ------- | ------ |
+| Method | Type | Status |
+| ------ | ---- | ------ |
 | `close()` | — | :white_check_mark: Implemented |
 
 ## `callback` function
@@ -22,8 +22,8 @@
 
 ## Request
 
-| Property | Returns | Status |
-| -------- | ------- | ------ |
+| Property | Type | Status |
+| -------- | ---- | ------ |
 | `method` | `string` | :white_check_mark: Implemented |
 | `url` | `string` | :white_check_mark: Implemented |
 | `httpVersion` | `string` | :white_check_mark: Implemented |
@@ -33,8 +33,8 @@
 
 ## Response
 
-| Method/Property | Returns | Status |
-| --------------- | ------- | ------ |
+| Method/Property | Type | Status |
+| --------------- | ---- | ------ |
 | `headers` | `object` | :white_check_mark: Implemented |
 | `statusCode` | `int` | :white_check_mark: Implemented |
 | `setHeader(name, value)` | — | :white_check_mark: Implemented |

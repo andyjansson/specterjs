@@ -1,7 +1,7 @@
 # `fs` Module
 
-| Method/Property | Returns | Status | Notes |
-| --------------- | ------- | ------ | ----- |
+| Method/Property | Type | Status | Notes |
+| --------------- | ---- | ------ | ----- |
 | `separator` | `string` | :white_check_mark: Implemented | The directory separator, i.e. `\` |
 | `workingDirectory` | `string` | :white_check_mark: Implemented | Returns the current working directory |
 | `absolute(path)` | `string` | :white_check_mark: Implemented | — |
@@ -31,8 +31,8 @@
 
 ## Stream
 
-| Method/Property | Returns | Status |
-| --------------- | ------- | ------ |
+| Method/Property | Type | Status |
+| --------------- | ---- | ------ |
 | `atEnd()` | `bool` | :white_check_mark: Implemented |
 | `close()` | — | :white_check_mark: Implemented |
 | `flush()` | — | :white_check_mark: Implemented |
