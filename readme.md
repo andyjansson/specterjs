@@ -10,12 +10,12 @@ SpecterJS is a scriptable headless browser with Internet Explorer bindings. Spec
 
 | Module  | Status |
 | -------- | ----- |
-| Child Process  | Implemented  |
-| Cookie Jar | Not Implemented |
-| File System | Implemented |
-| System | Implemented |
-| Web page  | Partially implemented  |
-| Web Server | Implemented |
+| [`child_process`](docs/compatibility/modules/child_process.md) | :white_check_mark: Implemented  |
+| Cookie Jar | :x: Not Implemented |
+| [`fs`](docs/compatibility/modules/fs.md) | :white_check_mark: Implemented |
+| [`system`](docs/compatibility/modules/system.md) | :white_check_mark: Implemented |
+| [`webpage`](docs/compatibility/modules/webpage.md)  | :warning: Partially implemented  |
+| [`webserver`](docs/compatibility/modules/webserver.md) | :white_check_mark: Implemented |
 
 ## Command line Interface
 
@@ -30,42 +30,42 @@ SpecterJS is a scriptable headless browser with Internet Explorer bindings. Spec
 
 | Option | Status |
 |--------|--------|
-| --cookies-file= | Not implemented |
-| --config= | Implemented |
-| --debug= | Not implemented |
-| --disk-cache= | Not implemented |
-| --disk-cache-path= | Not implemented |
-| --ignore-ssl-errors= | Implemented |
-| --load-images= | Not implemented |
-| --local-url-access= | Not implemented |
-| --local-storage-path= | Not implemented |
-| --local-storage-quota= | Not implemented |
-| --offline-storage-path= | Not implemented |
-| --offline-storage-quota= | Not implemented |
-| --local-to-remote-url-access= | Not implemented |
-| --max-disk-cache-size= | Not implemented |
-| --output-encoding= | Implemented |
-| --remote-debugger-port= | Not implemented |
-| --remote-debugger-autoru=n | Not implemented |
-| --proxy= | Not implemented |
-| --proxy-auth= | Not implemented |
-| --proxy-type= | Not implemented |
-| --script-encoding= | Not implemented |
-| --script-language= | Not implemented |
-| --web-security= | Not implemented |
-| --ssl-protocol= | Not implemented |
-| --ssl-ciphers= | Not implemented |
-| --ssl-certificates-path= | Not implemented |
-| --ssl-client-certificate-file= | Not implemented |
-| --ssl-client-key-file= | Not implemented |
-| --ssl-client-key-passphrase= | Not implemented |
-| --webdriver= | Not implemented |
-| --webdriver-logfile= | Not implemented |
-| --webdriver-loglevel= | Not implemented |
-| --webdriver-selenium-grid-hub= | Not implemented |
-| -w, --wd | Not implemented |
-| -h, --help | Implemented |
-| -v, --version | Not implemented |
+| --cookies-file= | :x: Not implemented |
+| --config= | :white_check_mark: Implemented |
+| --debug= | :x: Not implemented |
+| --disk-cache= | :x: Not implemented |
+| --disk-cache-path= | :x: Not implemented |
+| --ignore-ssl-errors= | :white_check_mark: Implemented |
+| --load-images= | :x: Not implemented |
+| --local-url-access= | :x: Not implemented |
+| --local-storage-path= | :x: Not implemented |
+| --local-storage-quota= | :x: Not implemented |
+| --offline-storage-path= | :x: Not implemented |
+| --offline-storage-quota= | :x: Not implemented |
+| --local-to-remote-url-access= | :x: Not implemented |
+| --max-disk-cache-size= | :x: Not implemented |
+| --output-encoding= | :white_check_mark: Implemented |
+| --remote-debugger-port= | :x: Not implemented |
+| --remote-debugger-autoru=n | :x: Not implemented |
+| --proxy= | :x: Not implemented |
+| --proxy-auth= | :x: Not implemented |
+| --proxy-type= | :x: Not implemented |
+| --script-encoding= | :x: Not implemented |
+| --script-language= | :x: Not implemented |
+| --web-security= | :x: Not implemented |
+| --ssl-protocol= | :x: Not implemented |
+| --ssl-ciphers= | :x: Not implemented |
+| --ssl-certificates-path= | :x: Not implemented |
+| --ssl-client-certificate-file= | :x: Not implemented |
+| --ssl-client-key-file= | :x: Not implemented |
+| --ssl-client-key-passphrase= | :x: Not implemented |
+| --webdriver= | :x: Not implemented |
+| --webdriver-logfile= | :x: Not implemented |
+| --webdriver-loglevel= | :x: Not implemented |
+| --webdriver-selenium-grid-hub= | :x: Not implemented |
+| -w, --wd | :x: Not implemented |
+| -h, --help | :white_check_mark: Implemented |
+| -v, --version | :x: Not implemented |
 
 #### Added options
 
@@ -77,13 +77,13 @@ SpecterJS is a scriptable headless browser with Internet Explorer bindings. Spec
 
 | Global | Status | Comment |
 | ------ | ------ | ------- |
-| `phantom` | Implemented | —  |
-| `require()` | Implemented | — |
-| `console` | Partially implemented | `.log()`, `.error()` and `.info()` are implemented so far. |
-| `setTimeout()`  | Implemented | — |
-| `setInterval()` | Implemented | — |
-| `clearTimeout()` | Implemented |—  |
-| `clearInterval()` | Implemented | — |
+| `phantom` | :white_check_mark: Implemented | —  |
+| `require()` | :white_check_mark: Implemented | — |
+| `console` | :warning: Partially implemented | `.log()`, `.error()` and `.info()` are implemented so far. |
+| `setTimeout()`  | :white_check_mark: Implemented | — |
+| `setInterval()` | :white_check_mark: Implemented | — |
+| `clearTimeout()` | :white_check_mark: Implemented |—  |
+| `clearInterval()` | :white_check_mark: Implemented | — |
 
 # Contributing
 
