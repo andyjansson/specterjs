@@ -443,10 +443,13 @@ namespace SpecterJS.Bindings.Modules.WebPage
 		}
 
 		[ScriptMember(Name = "evaluateAsync")]
-		public void EvaluateAsync(dynamic func, params dynamic[] args)
+		public void EvaluateAsync(dynamic func, int delayMillis = 0, params dynamic[] args)
 		{
-			Task.Factory.StartNew(() => Evaluate(func, args));
-        }
+			Task.Factory.StartNew(() => {
+				Thread.Sleep(delayMillis);
+				Evaluate(func, args);
+			});
+		}
 
 		[ScriptMember(Name = "evaluateJavascript")]
 		public object EvaluateJavascript(string source)
