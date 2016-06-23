@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SpecterJS.Browser;
 using SpecterJS.CommandLine;
+using System;
 using System.Text;
 
 namespace SpecterJS
@@ -9,7 +10,7 @@ namespace SpecterJS
 	{
 		public Options()
 		{
-			OutputEncoding = Encoding.Default;
+			OutputEncoding = new UTF8Encoding();
 			EmulationMode = IEVersion.Edge;
 		}
 
@@ -25,7 +26,13 @@ namespace SpecterJS
 			Description = "Sets the encoding for the terminal output, default is 'utf8'"
 			)]
 		[JsonProperty("outputEncoding")]
-		public Encoding OutputEncoding { get; set; }
+		public Encoding OutputEncoding
+		{
+			set
+			{
+				Console.OutputEncoding = value;
+			}
+		}
 
 		[Option(
 			"emulation-mode=",

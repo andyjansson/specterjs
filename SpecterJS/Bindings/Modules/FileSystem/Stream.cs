@@ -9,19 +9,19 @@ namespace SpecterJS.Bindings.Modules.FileSystem
 	public class Stream : IDisposable
 	{
 		private StreamReader reader;
-		private StreamWriter writer;
+		private TextWriter writer;
 
 		public Stream(StreamReader reader)
 		{
 			this.reader = reader;
 		}
 
-		public Stream(StreamWriter writer)
+		public Stream(TextWriter writer)
 		{
 			this.writer = writer;
 		}
 
-		public Stream(StreamReader reader, StreamWriter writer)
+		public Stream(StreamReader reader, TextWriter writer)
 		{
 			this.reader = reader;
 			this.writer = writer;
@@ -107,6 +107,7 @@ namespace SpecterJS.Bindings.Modules.FileSystem
 		[NoScriptAccess]
 		public void Dispose()
 		{
+			this.Flush();
 			this.Close();
 		}
 

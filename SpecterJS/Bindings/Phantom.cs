@@ -56,7 +56,7 @@ namespace SpecterJS.Bindings
 		public Modules.System.System CreateSystem()
 		{
 			dynamic arguments = engine.Evaluate(JsonConvert.SerializeObject(specter.Arguments));
-			return new Modules.System.System(arguments, specter.Options.OutputEncoding);
+			return new Modules.System.System(arguments);
 		}
 
 		[ScriptMember(Name = "createFilesystem")]

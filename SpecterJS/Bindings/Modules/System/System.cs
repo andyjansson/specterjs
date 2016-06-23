@@ -9,11 +9,9 @@ namespace SpecterJS.Bindings.Modules.System
 {
 	public class System
 	{
-		private Encoding outputEncoding;
-		public System(dynamic args, Encoding encoding)
+		public System(dynamic args)
 		{
 			Arguments = args;
-			outputEncoding = encoding;
 			OperatingSystem = new OperatingSystem();
 		}
 
@@ -64,7 +62,7 @@ namespace SpecterJS.Bindings.Modules.System
 		{
 			get
 			{
-				return new Stream(new global::System.IO.StreamWriter(global::System.Console.OpenStandardOutput(), outputEncoding));
+				return new Stream(Console.Out);
 			}
 		}
 
@@ -73,7 +71,7 @@ namespace SpecterJS.Bindings.Modules.System
 		{
 			get
 			{
-				return new Stream(new global::System.IO.StreamWriter(global::System.Console.OpenStandardError(), outputEncoding));
+				return new Stream(Console.Error);
 			}
 		}
 	}

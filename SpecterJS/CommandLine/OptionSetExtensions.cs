@@ -31,9 +31,9 @@ namespace SpecterJS.CommandLine
 				return Enum.Parse(t, value, true);
 
 			if (typeof(Encoding).IsAssignableFrom(t))
-				return Encoding.GetEncodings()
+				return Activator.CreateInstance(Encoding.GetEncodings()
 					.Where(x => x.Name.Replace("-", "").Equals(value, StringComparison.OrdinalIgnoreCase))
-					.Single().GetEncoding();
+					.Single().GetEncoding().GetType());
 
 			return Convert.ChangeType(value, t);
 		}
