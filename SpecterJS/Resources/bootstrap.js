@@ -1,6 +1,7 @@
 ﻿(function (GLOBAL) {
 	var fs, nativeCache = {};
 	var cache = {};
+	var paths = [];
 
 	var nativeModules = {
 		child_process: function () {
@@ -88,6 +89,13 @@
 				dir = dirname(dir);
 			}
 		}
+		for (var i = 0; i < paths.length; ++i) {
+			if (fs.isAbsolute(paths[i])) {
+				_paths.push(fs.absolute(joinPath(paths[i], request)));
+			} else {
+				_paths.push(fs.absolute(joinPath(this.dirname, paths[i], request)));
+			}
+		}
 		return paths;
 	};
 
@@ -168,7 +176,7 @@
 		}
 		require.cache = cache;
 		require.extensions = extensions;
-		//require.paths = paths;
+		require.paths = paths;
 		require.stub = function (request, exports) {
 			self.stubs[request] = { exports: exports };
 		};
