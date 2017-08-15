@@ -13,7 +13,7 @@ namespace SpecterJS.Bindings.Modules.WebServer
 		private HttpListener listener;
 		private Task acceptLoop;
 
-		public Listener(Uri url, DynamicObject opts, DynamicObject callback)
+		public Listener(Uri url, DynamicObject opts, Connection callback)
 		{
 			listener = new HttpListener();
 			listener.Prefixes.Add(url.AbsoluteUri);
@@ -33,7 +33,7 @@ namespace SpecterJS.Bindings.Modules.WebServer
 						context.Response.KeepAlive = true;
 					}
 				}
-				ObjectHelpers.DynamicInvoke(callback, request, response);
+				callback.Write(request, response);
 			});
 
 			acceptLoop = Task.Run(async () =>
@@ -55,7 +55,7 @@ namespace SpecterJS.Bindings.Modules.WebServer
 		[NoScriptAccess]
 		public void Dispose()
 		{
-			this.Close();
+			Close();
 		}
 
 		[NoScriptAccess]

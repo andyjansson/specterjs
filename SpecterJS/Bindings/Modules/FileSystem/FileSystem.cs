@@ -1,11 +1,12 @@
 ﻿using Microsoft.ClearScript;
+using SpecterJS.Util;
 using System;
 using System.IO;
 using System.Linq;
 
 namespace SpecterJS.Bindings.Modules.FileSystem
 {
-	public class FileSystem
+	public class FileSystem : PropertyBag
 	{
 		[ScriptMember(Name = "separator")]
 		public string Separator
@@ -25,6 +26,12 @@ namespace SpecterJS.Bindings.Modules.FileSystem
 			}
 		}
 
+		[ScriptMember(Name = "fromNativeSeparators")]
+		public string FromNativeSeparators(string path)
+		{
+			return path.Replace(Separator, "/");
+		}
+
 		[ScriptMember(Name = "absolute")]
 		public string GetAbsolutePath(string path)
 		{
@@ -42,25 +49,41 @@ namespace SpecterJS.Bindings.Modules.FileSystem
 			return false;
 		}
 
-		[ScriptMember(Name = "copy")]
-		public void Copy(string source, string destination)
+		[ScriptMember(Name = "_copy")]
+		public bool Copy(string source, string destination)
 		{
-			File.Copy(source, destination);
+			try
+			{
+				File.Copy(source, destination);
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
 		}
 
-		[ScriptMember(Name = "copyTree")]
-		public void CopyTree(string source, string destination)
+		[ScriptMember(Name = "_copyTree")]
+		public bool CopyTree(string source, string destination)
 		{
-			if (Directory.Exists(source) && !String.IsNullOrEmpty(destination))
-			{
-				if (destination.IndexOfAny(Path.GetInvalidPathChars()) < 0)
-				{
-					foreach (var dir in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
-						Directory.CreateDirectory(dir.Replace(source, destination));
+			if (!Directory.Exists(source) || String.IsNullOrEmpty(destination))
+				return false;
 
-					foreach (var file in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
-						File.Copy(file, file.Replace(source, destination), true);
-				}
+			if (destination.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
+				return false;
+			try
+			{
+				foreach (var dir in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
+					Directory.CreateDirectory(dir.Replace(source, destination));
+
+				foreach (var file in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
+					File.Copy(file, file.Replace(source, destination), true);
+
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
 			}
 		}
 
@@ -97,6 +120,11 @@ namespace SpecterJS.Bindings.Modules.FileSystem
 		[ScriptMember(Name = "isFile")]
 		public bool IsFile(string path)
 		{
+			if (path.StartsWith(":"))
+			{
+				return ResourceHelpers.ResourceExists(path.Substring(1));
+			}
+
 			return File.Exists(path);
 		}
 
@@ -187,22 +215,10 @@ namespace SpecterJS.Bindings.Modules.FileSystem
 			File.Move(source, destination);
 		}
 
-		[ScriptMember(Name = "open")]
+		[ScriptMember(Name = "_open")]
 		public Stream Open(string path, dynamic mode)
 		{
 			return new Stream(path, mode);
-		}
-
-		[ScriptMember(Name = "read")]
-		public string Read(string path, string param = "")
-		{
-			if (!param.Contains("r"))
-				param += "r";
-
-			using (var stream = Open(path, param))
-			{
-				return stream.Read();
-			}
 		}
 
 		[ScriptMember(Name = "readLink")]
@@ -217,54 +233,59 @@ namespace SpecterJS.Bindings.Modules.FileSystem
 			return link.Path;
 		}
 
-		[ScriptMember(Name = "remove")]
-		public void RemoveFile(string path)
+		[ScriptMember(Name = "_remove")]
+		public bool RemoveFile(string path)
 		{
-			File.Delete(path);
-		}
-
-		[ScriptMember(Name = "removeDirectory")]
-		public void RemoveDirectory(string path)
-		{
-			if (Directory.Exists(path))
-				Directory.Delete(path);
-		}
-
-		[ScriptMember(Name = "removeTree")]
-		public void RemoveTree(string path)
-		{
-			if (Directory.Exists(path))
-				Directory.Delete(path, true);
-
-			if (File.Exists(path))
+			try
+			{
 				File.Delete(path);
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
 		}
 
-		[ScriptMember(Name = "size")]
+		[ScriptMember(Name = "_removeDirectory")]
+		public bool RemoveDirectory(string path)
+		{
+			if (!Directory.Exists(path))
+				return false;
+
+			try
+			{
+				Directory.Delete(path);
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
+
+		[ScriptMember(Name = "_removeTree")]
+		public bool RemoveTree(string path)
+		{
+			if (Directory.Exists(path))
+			{
+				try
+				{
+					Directory.Delete(path, true);
+					return true;
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+			}
+			return RemoveFile(path);
+		}
+
+		[ScriptMember(Name = "_size")]
 		public long GetFileSize(string path)
 		{
 			return File.Exists(path) ? new FileInfo(path).Length : -1;
-		}
-
-		[ScriptMember(Name = "touch")]
-		public void TouchFile(string path)
-		{
-			if (!File.Exists(path))
-				File.Create(path);
-
-			File.SetLastWriteTimeUtc(path, DateTime.UtcNow);
-		}
-
-		[ScriptMember(Name = "write")]
-		public void Write(string path, string content, string param)
-		{
-			if (!param.Contains("w"))
-				param += "w";
-
-			using (var stream = Open(path, param))
-			{
-				stream.Write(content);
-			}
 		}
 	}
 }

@@ -23,7 +23,7 @@ namespace SpecterJS.Bindings.Modules.WebServer
 		{
 			get
 			{
-				var headers = (IDictionary<string, object>)new ExpandoObject();
+				var headers = new Microsoft.ClearScript.PropertyBag();
 				foreach (var key in response.Headers.AllKeys)
 				{
 					headers.Add(key, response.Headers[key]);
@@ -32,11 +32,11 @@ namespace SpecterJS.Bindings.Modules.WebServer
 			}
 			set
 			{
-				var headers = (IDictionary<string, string>)value;
+				var headerNames = value.GetDynamicMemberNames();
 				response.Headers.Clear();
-				foreach (var key in headers.Keys)
+				foreach (var key in headerNames)
 				{
-					response.Headers.Add(key, headers[key]);
+					response.Headers.Add(key, value[key]);
 				}
 
 			}
@@ -105,11 +105,5 @@ namespace SpecterJS.Bindings.Modules.WebServer
 			if (!headersSent) WriteHead(200, null);
 			Close();
 		}
-
-		//[NoScriptAccess]
-		//public void Dispose()
-		//{
-		//	Close();
-		//}
 	}
 }

@@ -2,12 +2,11 @@
 using System;
 using System.Collections;
 using System.Threading;
-using System.Text;
 using SpecterJS.Bindings.Modules.FileSystem;
 
 namespace SpecterJS.Bindings.Modules.System
 {
-	public class System
+	public class System : PropertyBag
 	{
 		public System(dynamic args)
 		{
@@ -39,25 +38,16 @@ namespace SpecterJS.Bindings.Modules.System
 			}
 		}
 
-		[ScriptMember(Name = "platform")]
-		public string Platform
-		{
-			get
-			{
-				return "specterjs";
-			}
-		}
-
-		[ScriptMember(Name = "stdin")]
+		[ScriptMember(Name = "standardin")]
 		public Stream StandardInput
 		{
 			get
 			{
-				return new Stream(new global::System.IO.StreamReader(global::System.Console.OpenStandardInput()));
+				return new Stream(new global::System.IO.StreamReader(Console.OpenStandardInput()));
 			}
 		}
 
-		[ScriptMember(Name = "stdout")]
+		[ScriptMember(Name = "standardout")]
 		public Stream StandardOutput
 		{
 			get
@@ -66,7 +56,7 @@ namespace SpecterJS.Bindings.Modules.System
 			}
 		}
 
-		[ScriptMember(Name = "stderr")]
+		[ScriptMember(Name = "standarderr")]
 		public Stream StandardError
 		{
 			get

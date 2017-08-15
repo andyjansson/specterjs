@@ -3,5 +3,8 @@
 	// TODO: Implement
 	public class CookieJar
 	{
+        public CookieJar(string path)
+        {
+        }
 	}
 }

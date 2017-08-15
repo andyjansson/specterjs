@@ -28,8 +28,7 @@ namespace SpecterJS
 			Filename = filename;
 			Arguments = args;
 
-			if (OnExecute != null)
-				OnExecute();
+			OnExecute?.Invoke();
 
 			engine.Execute(filename, code);
 			return this;

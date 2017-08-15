@@ -791,7 +791,7 @@ namespace SpecterJS.Bindings.Modules.WebPage
 					//else evt.button = 1;
 					break;
 				case "keyup":
-
+					
 					key = args[0] as string;
 					switch (key)
 					{

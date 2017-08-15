@@ -3,47 +3,10 @@
 	var cache = {};
 	var paths = [];
 
-	var nativeModules = {
-		child_process: function () {
-			if (!nativeCache['child_process'])
-				nativeCache['child_process'] = phantom.createChildProcess();
-			return nativeCache['child_process'];
-		},
-		cookiejar: function () {
-			if (!nativeCache['cookiejar'])
-				nativeCache['cookiejar'] = {
-					create: phantom.createCookieJar
-				};
-			return nativeCache['cookiejar'];
-		},
-		fs: function () {
-			if (!nativeCache['fs'])
-				nativeCache['fs'] = phantom.createFilesystem();
-
-			return nativeCache['fs'];
-		},
-		system: function () {
-			if (!nativeCache['system'])
-				nativeCache['system'] = phantom.createSystem();
-
-			return nativeCache['system'];
-		},
-		webpage: function () {
-			if (!nativeCache['webpage'])
-				nativeCache['webpage'] = {
-					create: phantom.createWebPage
-				};
-
-			return nativeCache['webpage'];
-		},
-		webserver: function () {
-			if (!nativeCache['webserver'])
-				nativeCache['webserver'] = {
-					create: phantom.createWebServer
-				};
-
-			return nativeCache['webserver'];
-		}
+	var nativeExports = {
+		get fs() { return phantom.createFilesystem(); },
+		get child_process() { return phantom.createChildProcess(); },
+		get system() { return phantom.createSystem(); }
 	};
 
     var extensions = {
@@ -56,6 +19,21 @@
             module.exports = JSON.parse(fs.read(filename));
         }
     };
+
+    function loadFs() {
+    	var file, code, module, filename = ':/modules/fs.js';
+
+    	module = new Module(filename);
+    	cache[filename] = module;
+    	module.exports = nativeExports.fs;
+
+    	file = module.exports._open(filename, { mode: 'r' })
+    	code = file.read();
+    	file.close();
+    	module._compile(code);
+
+    	return module.exports;
+    }
 	
 	function joinPath() {
 		var args = Array.prototype.slice.call(arguments);
@@ -78,14 +56,15 @@
 	}
 
 	var getPaths = function (request, dir) {
-		var paths = [];
+		var _paths = [];
 		if (request[0] == '.')
-			paths.push(fs.absolute(dir ? joinPath(dir, request) : request));
+			_paths.push(fs.absolute(dir ? joinPath(dir, request) : request));
 		else if (fs.isAbsolute(request))
-			paths.push(fs.absolute(request));
+			_paths.push(fs.absolute(request));
 		else {
+			_paths.push(joinPath(':/modules', request));
 			while (dir) {
-				paths.push(joinPath(dir, 'node_modules', request));
+				_paths.push(joinPath(dir, 'node_modules', request));
 				dir = dirname(dir);
 			}
 		}
@@ -96,7 +75,7 @@
 				_paths.push(fs.absolute(joinPath(this.dirname, paths[i], request)));
 			}
 		}
-		return paths;
+		return _paths;
 	};
 
 	var tryFile = function (path) {
@@ -164,6 +143,10 @@
 		this.dirname = dirname(filename);
 	};
 
+	Module.prototype._isNative = function () {
+		return this.filename && this.filename[0] === ':';
+	};
+
 	Module.prototype._compile = function (code) {
 		phantom.loadModule(code, this.filename);
 	};
@@ -185,16 +168,13 @@
 	};
 
 	Module.prototype.require = function (request) {
-		if (nativeModules[request]) {
-			return nativeModules[request]();
-		}
-
 		if (this.stubs.hasOwnProperty(request)) {
 			if (this.stubs[request].exports instanceof Function)
 				this.stubs[request].exports = this.stubs[request].exports();
 			return this.stubs[request].exports;
 		}
 		var filename = getFilename(request, this.dirname);
+
 		if (!filename)
 			throw new Error("Cannot find module '" + request + "'");
 
@@ -203,13 +183,17 @@
 		}
 
 		var module = new Module(filename, this.stubs);
+		if (module._isNative()) {
+			module.exports = nativeExports[request] || {};
+		}
 		cache[filename] = module;
 		loadModule(module, filename);
 
 		return module.exports;
 	};
-	fs = nativeModules.fs(), mainModule = new Module();
+	var mainModule = new Module();
 	GLOBAL.require = mainModule._getRequire();
+	fs = loadFs();
 	var cwd = fs.absolute(phantom.libraryPath);
 	var mainFilename = joinPath(cwd, basename(require('system').args[0]) || 'repl');
 	mainModule._setFilename(mainFilename);

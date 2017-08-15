@@ -26,9 +26,9 @@ namespace SpecterJS.Bindings.Modules.WebServer
             }
         }
 
-        private static IDictionary<string, object> GetHeaders(HttpListenerRequest request)
+        private static Microsoft.ClearScript.PropertyBag GetHeaders(HttpListenerRequest request)
         {
-            var headers = (IDictionary<string, object>)new ExpandoObject();
+            var headers = new Microsoft.ClearScript.PropertyBag();
             foreach (var key in request.Headers.AllKeys)
             {
                 headers.Add(key, request.Headers[key]);

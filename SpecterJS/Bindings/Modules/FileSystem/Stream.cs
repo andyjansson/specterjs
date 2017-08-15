@@ -1,4 +1,5 @@
 ﻿using Microsoft.ClearScript;
+using SpecterJS.Util;
 using System;
 using System.IO;
 using System.Linq;
@@ -80,7 +81,10 @@ namespace SpecterJS.Bindings.Modules.FileSystem
 					.Where(x => x.Name.Equals(charset, StringComparison.OrdinalIgnoreCase))
 					.Single().GetEncoding();
 
-			var file = File.Open(path, fileMode, fileAccess);
+			var file = path.StartsWith(":")
+				? ResourceHelpers.ResourceAsStream(path.Substring(1))
+				: File.Open(path, fileMode, fileAccess);
+
 			if (fileAccess.HasFlag(FileAccess.Read))
 				reader = new StreamReader(file, encoding);
 

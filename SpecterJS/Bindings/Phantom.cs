@@ -86,9 +86,9 @@ namespace SpecterJS.Bindings
 		}
 
 		[ScriptMember(Name = "createCookieJar")]
-		public CookieJar CreateCookieJar()
+		public CookieJar CreateCookieJar(string path)
 		{
-			return new CookieJar();
+			return new CookieJar(path);
 		}
 
 		[ScriptMember(Name = "libraryPath")]

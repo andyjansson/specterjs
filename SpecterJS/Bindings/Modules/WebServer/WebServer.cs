@@ -1,52 +1,32 @@
 ﻿using Microsoft.ClearScript;
 using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
 
 namespace SpecterJS.Bindings.Modules.WebServer
 {
-	public class WebServer : IDisposable
+	public class WebServer : PropertyBag
 	{
-		private IDictionary<Uri, Listener> listeners;
-		
+		private Listener listener;
+
 		public WebServer()
 		{
-			listeners = new Dictionary<Uri, Listener>();
+			NewRequest = new Connection();
 		}
 
-		[NoScriptAccess]
-		public void Dispose()
-		{
-			foreach (var listener in listeners.Values)
-			{
-				listener.Close();
-			}
-			listeners.Clear();
-		}
+		[ScriptMember("newRequest")]
+		public Connection NewRequest { get; private set; }
 
-		[ScriptMember(Name = "listen")]
-		public Listener Listen(int port, DynamicObject callback)
+		[ScriptMember(Name = "listenOnPort")]
+		public Listener ListenOnPort(string portOrAddr, dynamic opts)
 		{
-			return this.Listen(port, null, callback);
-		}
+			var addr = string.Empty;
+			int port = 0;
 
-		[ScriptMember(Name = "listen")]
-		public Listener Listen(string addr, DynamicObject callback)
-		{
-			return this.Listen(addr, null, callback);
-		}
+			if (int.TryParse(portOrAddr, out port))
+				addr = string.Format("http://localhost:{0}/", port);
+			else
+				addr = string.Format("http://{0}/", portOrAddr);
 
-		[ScriptMember(Name = "listen")]
-		public Listener Listen(int port, dynamic opts, DynamicObject callback)
-		{
-			return this.Listen(string.Format("localhost:{0}", port), opts, callback);
-		}
-
-		[ScriptMember(Name = "listen")]
-		public Listener Listen(string addr, dynamic opts, DynamicObject callback)
-		{
-			var url = new Uri(string.Format("http://{0}/", addr));
+			var url = new Uri(addr);
 			if (url.Host.Equals("127.0.0.1"))
 			{
 				var builder = new UriBuilder(url);
@@ -54,16 +34,7 @@ namespace SpecterJS.Bindings.Modules.WebServer
 				url = builder.Uri;
 			}
 
-			Listener listener;
-
-			if (listeners.TryGetValue(url, out listener))
-			{
-				listener.Close();
-				listeners.Remove(url);
-			}
-
-			listener = new Listener(url, opts, callback);
-			listeners.Add(url, listener);
+			listener = new Listener(url, opts, NewRequest);
 			return listener;
 		}
 
@@ -72,7 +43,6 @@ namespace SpecterJS.Bindings.Modules.WebServer
 		{
 			get
 			{
-				var listener = listeners.Values.Last();
 				return listener?.Port ?? -1;
 			}
 		}

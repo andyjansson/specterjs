@@ -1,18 +1,17 @@
 ﻿using Microsoft.ClearScript;
-using SpecterJS.Util;
 using System;
 using System.Diagnostics;
+using System.Text;
+using System.Linq;
+using System.IO;
 
 namespace SpecterJS.Bindings.Modules.ChildProcess
 {
-	public class Context : IDisposable
+	public class Context : PropertyBag, IDisposable
 	{
 		private Process process;
-		private dynamic OnExit;
-		private bool hasExited;
-		private int status;
 
-		public Context(string libraryPath, string cmd, string[] args)
+		public Context(string libraryPath)
 		{
 			process = new Process
 			{
@@ -20,63 +19,83 @@ namespace SpecterJS.Bindings.Modules.ChildProcess
 				{
 					CreateNoWindow = true,
 					RedirectStandardOutput = true,
+					RedirectStandardInput = true,
 					RedirectStandardError = true,
 					UseShellExecute = false,
-					WorkingDirectory = libraryPath,
-					FileName = cmd
+					WorkingDirectory = libraryPath
 				},
 				EnableRaisingEvents = true
 			};
 
-			if (args != null)
-				process.StartInfo.Arguments = string.Join(" ", args);
+			StandardOutput = new Connection();
+			StandardError = new Connection();
+			Exit = new Connection();
 
-
-			StandardOutput = new StreamHandler(() => { process.BeginOutputReadLine(); });
-			StandardError = new StreamHandler(() => { process.BeginErrorReadLine(); });
-
-			process.Exited += delegate (object sender, EventArgs e)
+			process.OutputDataReceived += delegate (object sender, DataReceivedEventArgs e)
 			{
-				status = process.ExitCode;
-				hasExited = true;
-
-				if (OnExit != null)
-					ObjectHelpers.DynamicInvoke(OnExit, process.ExitCode);
+				if (e.Data == null)
+					Exit.Write(process.ExitCode);
+				else
+					StandardOutput.Write(e.Data);
 			};
 
-			process.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e)
+			process.ErrorDataReceived += delegate (object sender, DataReceivedEventArgs e)
 			{
-				StandardOutput.Write(e.Data);
+				if (e.Data != null)
+					StandardError.Write(e.Data);
 			};
-
-			process.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e)
-			{
-				StandardError.Write(e.Data);
-			};
-
-			process.Start();
 		}
 
-		[ScriptMember("stdout")]
-		public StreamHandler StandardOutput { get; set; }
-
-		[ScriptMember("stderr")]
-		public StreamHandler StandardError { get; set; }
-
-		[ScriptMember("on")]
-		public void AddEvent(string evt, dynamic cb)
+		[ScriptMember("_start")]
+		public void Start(string cmd, dynamic args)
 		{
-			switch (evt)
+			var arguments = new string[args.length];
+			for (var i = 0; i < arguments.Length; ++i)
+				arguments[i] = args[i];
+
+			process.StartInfo.FileName = cmd;
+			process.StartInfo.Arguments = string.Join(" ", arguments);
+			process.Start();
+			process.BeginOutputReadLine();
+			process.BeginErrorReadLine();
+		}
+
+		[ScriptMember("stdoutData")]
+		public Connection StandardOutput { get; private set; }
+
+		[ScriptMember("stderrData")]
+		public Connection StandardError { get; private set; }
+
+		[ScriptMember("exit")]
+		public Connection Exit { get; private set; }
+
+		[ScriptMember("_setEncoding")]
+		public void SetEncoding(string encoding)
+		{
+			var enc = Encoding.GetEncodings()
+				.Where(x => x.Name.Replace("-", "").Equals(encoding, StringComparison.OrdinalIgnoreCase))
+				.Single()
+				.GetEncoding();
+
+			process.StartInfo.StandardErrorEncoding = enc;
+			process.StartInfo.StandardOutputEncoding = enc;
+		}
+
+		[ScriptMember("_write")]
+		public void Write(dynamic chunk, string encoding)
+		{
+			var enc = Encoding.GetEncodings()
+				.Where(x => x.Name.Replace("-", "").Equals(encoding, StringComparison.OrdinalIgnoreCase))
+				.Single()
+				.GetEncoding();
+
+			using (var writer = new StreamWriter(process.StandardInput.BaseStream, enc))
 			{
-				case "exit":
-					OnExit = cb;
-					if (hasExited)
-						ObjectHelpers.DynamicInvoke(cb, status);
-					break;
+				writer.Write(chunk);
 			}
 		}
-
-		[NoScriptAccess]
+		
+		[ScriptMember("_close")]
 		public void Dispose()
 		{
 			process.Dispose();

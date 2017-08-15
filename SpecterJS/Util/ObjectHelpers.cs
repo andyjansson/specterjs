@@ -20,7 +20,7 @@ namespace SpecterJS.Util
 			{
 				object result;
 
-				if (args.Length == 0)
+				if (args == null || args.Length == 0)
 					return (target as dynamic)();
 
 				var binder = Binder.Invoke(CSharpBinderFlags.None, null, Enumerable.Repeat(argInfo, args.Length));
